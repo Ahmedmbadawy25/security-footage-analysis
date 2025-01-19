@@ -1,7 +1,6 @@
 import cv2
 
-# from config import CAMERA_STREAM
-CAMERA_STREAM = "rtsp://admin:Admin%40123@192.168.1.21:554/Streaming/Channels/1/1"
+from config import CAMERA_STREAM
 
 
 def capture_frames():

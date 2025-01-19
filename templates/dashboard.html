@@ -13,10 +13,7 @@
         <thead>
             <tr>
                 <th>Timestamp</th>
-                <th>Motion Detected</th>
                 <th>Human Detected</th>
-                <th>Cat Detected</th>
-                <th>Bag Detected</th>
                 <th>Detected Objects</th>
             </tr>
         </thead>
@@ -24,10 +21,7 @@
             {% for row in data %}
             <tr>
                 <td>{{ row.timestamp }}</td>
-                <td>{{ row.motion_detected }}</td>
                 <td>{{ row.human_detected }}</td>
-                <td>{{ row.cat_detected }}</td>
-                <td>{{ row.bag_detected }}</td>
                 <td>
                     {% for obj in row.detected_objects %}
                         {{ obj.label }} ({{ obj.confidence|round(2) }}),
