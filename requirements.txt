@@ -1,0 +1,8 @@
+numpy
+opencv-python
+flask
+torch
+pandas
+requests
+Pillow
+pymongo

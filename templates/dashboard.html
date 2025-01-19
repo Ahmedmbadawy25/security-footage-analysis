@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Analysis Dashboard</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Security Footage Analysis</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Motion Detected</th>
+                <th>Human Detected</th>
+                <th>Cat Detected</th>
+                <th>Bag Detected</th>
+                <th>Detected Objects</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.motion_detected }}</td>
+                <td>{{ row.human_detected }}</td>
+                <td>{{ row.cat_detected }}</td>
+                <td>{{ row.bag_detected }}</td>
+                <td>
+                    {% for obj in row.detected_objects %}
+                        {{ obj.label }} ({{ obj.confidence|round(2) }}),
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
