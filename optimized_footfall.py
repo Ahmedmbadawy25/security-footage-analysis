@@ -1,21 +1,17 @@
 import cv2
 import time
 import numpy as np
-import torch
 from ultralytics import YOLO
 from config import CAMERA_STREAM
 from supervision import ByteTrack
 from supervision.detection.core import Detections
 import supervision
+from thread import VideoCaptureThread
 
-last_frame_time = time.time()
-video_info = supervision.VideoInfo.from_video_path('./people-walking.mp4')
 
-video = cv2.VideoCapture('./people-walking.mp4')
-# video = cv2.VideoCapture(CAMERA_STREAM, cv2.CAP_FFMPEG)
-if not video.isOpened():
-    print("ERROR: Could not open camera stream. Check the RTSP URL or camera connection.")
-    exit(1)
+video_info = supervision.VideoInfo.from_video_path('./movie.mov')
+# video_thread = VideoCaptureThread(CAMERA_STREAM, cv2.CAP_FFMPEG)
+video_thread = VideoCaptureThread('./movie.mov', None)
 
 model = YOLO("yolov8n.pt")
 tracker = ByteTrack(frame_rate=video_info.fps)
@@ -26,10 +22,18 @@ down, up, total_counts = 0, 0, 0
 START = (0, video_info.height // 2)
 END = (video_info.width, video_info.height // 2)
 
+skip_frames = 3
+frame_count = 0
+
 while True:
-    ret, img = video.read()
-    if not ret:
+    img = video_thread.read()
+
+    if img is None:
         break  # End of video
+
+    frame_count += 1
+    if frame_count % skip_frames != 0:
+        continue  # Skip frames
 
     results = model(img, conf=0.4, verbose=False)[0]
 
@@ -88,9 +92,10 @@ while True:
     cv2.putText(img, f"Total Inside: {total_counts}", (10, 240), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     cv2.line(img, START, END, (0, 255, 0), 2)
   
-    cv2.imshow("Video", img)
+    cv2.imshow("Footfall Analysis", img)
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
-video.release()
+video_thread.release()
+video_thread.stop()
 cv2.destroyAllWindows()
