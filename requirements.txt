@@ -8,3 +8,4 @@ Pillow
 pymongo
 supervision
 ultralytics
+pytz
